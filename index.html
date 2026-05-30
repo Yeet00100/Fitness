@@ -169,6 +169,32 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 @keyframes slideUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 .card,.stats-grid,.streak-banner{animation:slideUp .35s ease both;}
+
+/* FAB */
+.fab{position:fixed;bottom:80px;right:20px;width:56px;height:56px;border-radius:50%;background:var(--accent);border:none;color:#fff;font-size:28px;font-weight:300;cursor:pointer;z-index:99;box-shadow:0 4px 20px rgba(255,107,0,.4);transition:all .2s;display:flex;align-items:center;justify-content:center;line-height:1;}
+.fab:active{transform:scale(.92);}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+.modal-overlay.show{opacity:1;pointer-events:all;}
+.modal-box{background:var(--card);border:1px solid var(--border);border-radius:24px 24px 0 0;padding:28px 20px 40px;width:100%;max-width:480px;transform:translateY(100%);transition:transform .35s cubic-bezier(.34,1.56,.64,1);}
+.modal-overlay.show .modal-box{transform:translateY(0);}
+.modal-title{font-family:'Bebas Neue','Arial Black',Impact,sans-serif;font-size:26px;letter-spacing:1px;color:var(--text);margin-bottom:4px;}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.log-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.log-type-btn{background:rgba(255,255,255,.04);border:2px solid var(--border);border-radius:14px;padding:16px 10px;text-align:center;cursor:pointer;transition:all .2s;user-select:none;}
+.log-type-btn:active{transform:scale(.95);}
+.log-type-btn.selected{border-color:var(--accent);background:rgba(255,107,0,.1);}
+.log-type-icon{font-size:28px;margin-bottom:6px;}
+.log-type-name{font-size:13px;font-weight:700;}
+.log-note-wrap{margin-bottom:16px;}
+.log-note{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:12px;padding:13px 14px;color:var(--text);font-family:'Sarabun',sans-serif;font-size:14px;outline:none;}
+.log-note:focus{border-color:var(--accent);}
+.log-note::placeholder{color:var(--muted);}
+.log-actions{display:flex;gap:10px;}
+.btn-log-save{flex:1;padding:14px;border-radius:12px;border:none;background:var(--accent);color:#fff;font-family:'Sarabun',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-log-save:active{transform:scale(.97);}
+.btn-log-cancel{padding:14px 18px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Sarabun',sans-serif;font-size:14px;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -315,7 +341,44 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="card"><div class="section-title">🍽️ อาหาร</div><div id="food-reminders"></div></div>
   </div>
 
+
+<!-- Log Workout Modal -->
+<div class="modal-overlay" id="log-modal">
+  <div class="modal-box">
+    <div class="modal-title">📝 บันทึกการออกกำลังกาย</div>
+    <div class="modal-sub">เลือกประเภทที่ทำวันนี้</div>
+    <div class="log-type-grid">
+      <div class="log-type-btn" onclick="selectLogType('run')" id="log-run">
+        <div class="log-type-icon">🏃</div>
+        <div class="log-type-name">วิ่ง</div>
+      </div>
+      <div class="log-type-btn" onclick="selectLogType('weight')" id="log-weight">
+        <div class="log-type-icon">💪</div>
+        <div class="log-type-name">เวท</div>
+      </div>
+      <div class="log-type-btn" onclick="selectLogType('both')" id="log-both">
+        <div class="log-type-icon">🔥</div>
+        <div class="log-type-name">ทั้งคู่</div>
+      </div>
+      <div class="log-type-btn" onclick="selectLogType('other')" id="log-other">
+        <div class="log-type-icon">⚡</div>
+        <div class="log-type-name">อื่นๆ</div>
+      </div>
+    </div>
+    <div class="log-note-wrap">
+      <input type="text" id="log-note" class="log-note" placeholder="โน้ต (เช่น วิ่ง 3km, Bench 40kg) — ไม่บังคับ" maxlength="80">
+    </div>
+    <div class="log-actions">
+      <button class="btn-log-save" onclick="saveLog()">✓ บันทึก</button>
+      <button class="btn-log-cancel" onclick="closeLogModal()">ยกเลิก</button>
+    </div>
+  </div>
+</div>
 </div><!-- end scroll-area -->
+
+
+<!-- FAB Log Button -->
+<button class="fab" onclick="openLogModal()" title="บันทึกการออกกำลังกาย">+</button>
 
 <!-- Bottom Nav -->
 <div class="bottom-nav">
@@ -545,7 +608,7 @@ function renderStats(){
     const div=document.createElement('div');
     div.className='history-item';
     const badgeClass=h.type==='run'?'badge-run':'badge-weight';
-    div.innerHTML=`<div><div class="history-date">${h.name}</div><div class="history-sub">${h.dateStr}</div></div><div class="history-badge ${badgeClass}">${h.type==='run'?'🏃 วิ่ง':'💪 เวท'}</div>`;
+    div.innerHTML=`<div><div class="history-date">${h.name}</div><div class="history-sub">${h.dateStr}${h.note?' • '+h.note:''}</div></div><div class="history-badge ${badgeClass}">${h.type==='run'?'🏃':'💪'}</div>`;
     hist.appendChild(div);
   });
   // Achievements grid
@@ -667,6 +730,69 @@ function showToast(msg){
   t.textContent=msg;t.classList.add('show');
   clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200);
 }
+
+
+// ===== LOG MODAL =====
+let selectedLogType = null;
+
+function openLogModal(){
+  selectedLogType = null;
+  document.querySelectorAll('.log-type-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('log-note').value = '';
+  document.getElementById('log-modal').classList.add('show');
+}
+
+function closeLogModal(){
+  document.getElementById('log-modal').classList.remove('show');
+}
+
+function selectLogType(type){
+  selectedLogType = type;
+  document.querySelectorAll('.log-type-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('log-'+type).classList.add('selected');
+}
+
+function saveLog(){
+  if(!selectedLogType){ showToast('⚠️ เลือกประเภทก่อนนะ'); return; }
+  const note = document.getElementById('log-note').value.trim();
+  const now = new Date();
+  const typeMap = {run:'run', weight:'weight', both:'weight', other:'weight'};
+  const nameMap = {run:'🏃 วิ่ง', weight:'💪 เวท', both:'🔥 วิ่ง+เวท', other:'⚡ อื่นๆ'};
+
+  // Save to stats
+  stats.totalSessions++;
+  if(selectedLogType==='run'||selectedLogType==='both') stats.totalRun++;
+  if(selectedLogType==='weight'||selectedLogType==='both') stats.totalWeight++;
+
+  // Streak
+  const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+  if(stats.lastDate===yesterday.toDateString()){stats.currentStreak++;}
+  else if(stats.lastDate!==today){stats.currentStreak=1;}
+  stats.lastDate=today;
+  if(stats.currentStreak>stats.bestStreak)stats.bestStreak=stats.currentStreak;
+
+  // History entry
+  stats.history.unshift({
+    date:today,
+    dateStr:`${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`,
+    type:typeMap[selectedLogType],
+    name:nameMap[selectedLogType],
+    note:note
+  });
+  if(stats.history.length>50)stats.history=stats.history.slice(0,50);
+  store.setJSON('fittrack_stats',stats);
+
+  closeLogModal();
+  updateStreakUI();
+  renderWeekGrid();
+  showToast('🔥 บันทึกแล้ว! เยี่ยมมาก');
+  setTimeout(()=>checkAchievements(),500);
+}
+
+// Close modal on overlay click
+document.getElementById('log-modal').addEventListener('click',function(e){
+  if(e.target===this) closeLogModal();
+});
 
 document.addEventListener('DOMContentLoaded',init);
 init();
