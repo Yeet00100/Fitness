@@ -171,7 +171,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .card,.stats-grid,.streak-banner{animation:slideUp .35s ease both;}
 
 /* FAB */
-.fab{position:fixed;bottom:84px;right:16px;width:52px;height:52px;border-radius:50%;background:var(--accent);border:none;color:#fff;font-size:26px;font-weight:300;cursor:pointer;z-index:150;box-shadow:0 4px 20px rgba(255,107,0,.5);transition:all .2s;display:flex;align-items:center;justify-content:center;line-height:1;}
+.fab{position:fixed;bottom:84px;right:16px;width:52px;height:52px;border-radius:50%;background:var(--accent);border:none;color:#fff;font-size:26px;font-weight:300;cursor:pointer;z-index:98;box-shadow:0 4px 20px rgba(255,107,0,.5);transition:all .3s;display:flex;align-items:center;justify-content:center;line-height:1;}
+.fab.hidden{opacity:0;pointer-events:none;transform:scale(0.7);}
 .fab:active{transform:scale(.92);}
 
 /* Modal */
@@ -762,10 +763,12 @@ function openLogModal(){
   document.querySelectorAll('.log-type-btn').forEach(b=>b.classList.remove('selected'));
   document.getElementById('log-note').value = '';
   document.getElementById('log-modal').classList.add('show');
+  document.querySelector('.fab').classList.add('hidden');
 }
 
 function closeLogModal(){
   document.getElementById('log-modal').classList.remove('show');
+  document.querySelector('.fab').classList.remove('hidden');
 }
 
 function selectLogType(type){
@@ -776,6 +779,7 @@ function selectLogType(type){
 
 function saveLog(){
   if(!selectedLogType){ showToast('⚠️ เลือกประเภทก่อนนะ'); return; }
+  document.querySelector('.fab').classList.remove('hidden');
   const note = document.getElementById('log-note').value.trim();
   const now = new Date();
   const typeMap = {run:'run', weight:'weight', both:'weight', other:'weight'};
@@ -818,6 +822,7 @@ document.getElementById('log-modal').addEventListener('click',function(e){
 
 // ===== DAY DETAIL MODAL =====
 function showDayDetail(dateStr, acts){
+  document.querySelector('.fab').classList.add('hidden');
   const names = {run:'🏃 วิ่ง', weight:'💪 เวท', both:'🔥 ทั้งคู่', other:'⚡ อื่นๆ'};
   let html2 = `<div style="margin-bottom:16px">
     <div style="font-size:12px;color:var(--muted);margin-bottom:12px">${dateStr}</div>`;
@@ -840,6 +845,7 @@ function showDayDetail(dateStr, acts){
 
 function closeDetailModal(){
   document.getElementById('detail-modal').classList.remove('show');
+  document.querySelector('.fab').classList.remove('hidden');
 }
 
 function deleteLog(idx){
