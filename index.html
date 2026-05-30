@@ -768,21 +768,13 @@ function showToast(msg){
 // ===== LOG MODAL =====
 let selectedLogType = null;
 
-function setModalHeight(modalId){
-  const box = document.querySelector('#'+modalId+' .modal-box');
-  const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-  const safeBottom = 34; // iPhone home indicator
-  box.style.maxHeight = (vh * 0.88) + 'px';
-  box.style.paddingBottom = safeBottom + 'px';
-}
-
 function openLogModal(){
   selectedLogType = null;
   document.querySelectorAll('.log-type-btn').forEach(b=>b.classList.remove('selected'));
   document.getElementById('log-note').value = '';
   document.getElementById('log-modal').classList.add('show');
   document.querySelector('.fab').classList.add('hidden');
-  setTimeout(()=>setModalHeight('log-modal'), 50);
+
 }
 
 function closeLogModal(){
@@ -842,7 +834,7 @@ document.getElementById('log-modal').addEventListener('click',function(e){
 // ===== DAY DETAIL MODAL =====
 function showDayDetail(dateStr, acts){
   document.querySelector('.fab').classList.add('hidden');
-  setTimeout(()=>setModalHeight('detail-modal'), 50);
+
   const names = {run:'🏃 วิ่ง', weight:'💪 เวท', both:'🔥 ทั้งคู่', other:'⚡ อื่นๆ'};
   let html2 = `<div style="margin-bottom:16px">
     <div style="font-size:12px;color:var(--muted);margin-bottom:12px">${dateStr}</div>`;
@@ -967,12 +959,7 @@ function renderTodayProgram(){
 }
 
 document.addEventListener('DOMContentLoaded',init);
-if(window.visualViewport){
-  window.visualViewport.addEventListener('resize',()=>{
-    if(document.getElementById('log-modal').classList.contains('show')) setModalHeight('log-modal');
-    if(document.getElementById('detail-modal').classList.contains('show')) setModalHeight('detail-modal');
-  });
-}
+
 init();
 </script>
 </body>
