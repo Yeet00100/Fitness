@@ -1171,6 +1171,26 @@ document.getElementById('detail-modal').addEventListener('click',function(e){
   if(e.target===this)closeDetailModal();
 });
 
+
+// ===== NAVIGATION =====
+function showPage(name, navEl){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  navEl.classList.add('active');
+  document.getElementById('scroll-area').scrollTop=0;
+  if(name==='stats') renderStats();
+  if(name==='remind') renderTodayProgram();
+}
+
+// ===== TOAST =====
+let toastT;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
 document.addEventListener('DOMContentLoaded',init);
 
 init();
