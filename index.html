@@ -14,7 +14,7 @@
 <title>FitTrack</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Sarabun:wght@300;400;600;700&display=swap');
-:root{--bg:#0a0a0f;--surface:#13131a;--card:#1a1a24;--border:#2a2a3a;--accent:#ff6b00;--run:#ff6b00;--weight:#ff6b00;--rest:#6b6b8a;--text:#f0f0f5;--muted:#6b6b8a;--water:#ff6b00;}
+:root{--bg:#0a0a0f;--surface:#13131a;--card:#1a1a24;--border:#2a2a3a;--accent:#ff6b00;--run:#ff6b00;--weight:#ff6b00;--rest:#6b6b8a;--hiit:#ff2d55;--text:#f0f0f5;--muted:#6b6b8a;--water:#ff6b00;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;overflow:hidden;}
 body{font-family:'Sarabun','Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
@@ -89,21 +89,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .week-day .day-label{font-size:8px;text-transform:uppercase;letter-spacing:.5px;}
 .week-day .day-icon{font-size:14px;}
 .week-day.today{border-color:var(--accent);background:rgba(255,107,0,.06);}
-.week-day.run{border-color:rgba(255,107,0,.5);}
+
 .week-day.weight{border-color:rgba(255,107,53,.4);}
 .week-day.rest{opacity:.4;}
 .week-day.completed-day{background:rgba(255,107,0,.08);}
-
-/* Reminders */
-.reminder-item{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;}
-.reminder-left{display:flex;align-items:center;gap:10px;}
-.reminder-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;background:rgba(255,255,255,.05);}
-.reminder-text{font-size:13px;font-weight:600;}
-.reminder-time{font-size:11px;color:var(--muted);margin-top:1px;}
-.toggle{width:42px;height:24px;border-radius:100px;background:var(--border);position:relative;cursor:pointer;transition:background .3s;flex-shrink:0;}
-.toggle.on{background:var(--accent);}
-.toggle::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:white;top:3px;left:3px;transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
-.toggle.on::after{transform:translateX(18px);background:#000;}
 
 /* Complete button */
 .complete-btn{width:100%;padding:14px;border-radius:14px;border:none;background:var(--accent);color:#fff;font-family:'Sarabun',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;transition:all .2s;}
@@ -200,6 +189,45 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .btn-log-save{flex:1;padding:14px;border-radius:12px;border:none;background:var(--accent);color:#fff;font-family:'Sarabun',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;}
 .btn-log-save:active{transform:scale(.97);}
 .btn-log-cancel{padding:14px 18px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Sarabun',sans-serif;font-size:14px;cursor:pointer;}
+
+/* Weekly Target */
+.weekly-target{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:16px;}
+.wt-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.wt-title{font-family:'Bebas Neue','Arial Black',Impact,sans-serif;font-size:20px;letter-spacing:1px;}
+.wt-edit{font-size:12px;color:var(--accent);cursor:pointer;padding:4px 10px;border:1px solid rgba(255,107,0,.3);border-radius:20px;}
+.wt-goals{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.wt-goal{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:10px 14px;flex:1;min-width:80px;text-align:center;}
+.wt-goal-icon{font-size:20px;margin-bottom:4px;}
+.wt-goal-num{font-family:'Bebas Neue','Arial Black',Impact,sans-serif;font-size:22px;color:var(--accent);line-height:1;}
+.wt-goal-label{font-size:10px;color:var(--muted);}
+.wt-progress{display:flex;flex-direction:column;gap:8px;}
+.wt-prog-row{display:flex;align-items:center;gap:10px;}
+.wt-prog-label{font-size:12px;color:var(--muted);width:60px;flex-shrink:0;}
+.wt-prog-bar{flex:1;height:8px;background:var(--border);border-radius:100px;overflow:hidden;}
+.wt-prog-fill{height:100%;border-radius:100px;transition:width .5s ease;}
+.wt-prog-count{font-size:12px;font-weight:700;width:32px;text-align:right;}
+
+/* Draggable week */
+.week-grid-wrap{margin-bottom:6px;}
+.week-col{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.week-day-label{font-size:9px;color:var(--muted);text-transform:uppercase;}
+.week-day-cell{width:100%;aspect-ratio:1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;border:1px solid var(--border);cursor:pointer;transition:all .2s;position:relative;}
+.week-day-cell.run{border-color:rgba(255,107,0,.4);}
+.week-day-cell.weight{border-color:rgba(255,107,0,.4);}
+.week-day-cell.hiit{border-color:rgba(255,45,85,.5);}
+.week-day-cell.rest{opacity:.4;}
+.week-day-cell.today{border-color:var(--accent);background:rgba(255,107,0,.06);}
+.week-day-cell.done{background:rgba(255,107,0,.12);}
+.week-day-cell.drag-over{border-color:var(--accent);background:rgba(255,107,0,.15);transform:scale(1.1);}
+
+/* Assign modal */
+.assign-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;}
+.assign-btn{background:rgba(255,255,255,.04);border:2px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .2s;}
+.assign-btn:active{transform:scale(.95);}
+.assign-btn.selected{border-color:var(--accent);background:rgba(255,107,0,.1);}
+.assign-icon{font-size:24px;margin-bottom:4px;}
+.assign-name{font-size:12px;font-weight:700;}
+.assign-desc{font-size:10px;color:var(--muted);margin-top:2px;}
 </style>
 </head>
 <body>
@@ -273,11 +301,53 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       </div>
     </div>
 
-    <!-- Week -->
+    <!-- Weekly Target -->
+    <div class="weekly-target">
+      <div class="wt-header">
+        <div class="wt-title">🎯 เป้าสัปดาห์นี้</div>
+        <div class="wt-edit" onclick="openGoalEdit()">แก้ไข</div>
+      </div>
+      <div class="wt-goals">
+        <div class="wt-goal">
+          <div class="wt-goal-icon">🏃</div>
+          <div class="wt-goal-num" id="goal-run-num">3</div>
+          <div class="wt-goal-label">วิ่ง/ครั้ง</div>
+        </div>
+        <div class="wt-goal">
+          <div class="wt-goal-icon">💪</div>
+          <div class="wt-goal-num" id="goal-weight-num">2</div>
+          <div class="wt-goal-label">เวท/ครั้ง</div>
+        </div>
+        <div class="wt-goal">
+          <div class="wt-goal-icon">⚡</div>
+          <div class="wt-goal-num" id="goal-hiit-num">1</div>
+          <div class="wt-goal-label">HIIT/ครั้ง</div>
+        </div>
+      </div>
+      <div class="wt-progress">
+        <div class="wt-prog-row">
+          <div class="wt-prog-label">🏃 วิ่ง</div>
+          <div class="wt-prog-bar"><div class="wt-prog-fill" id="prog-run" style="width:0%;background:var(--run)"></div></div>
+          <div class="wt-prog-count" id="cnt-run" style="color:var(--run)">0/3</div>
+        </div>
+        <div class="wt-prog-row">
+          <div class="wt-prog-label">💪 เวท</div>
+          <div class="wt-prog-bar"><div class="wt-prog-fill" id="prog-weight" style="width:0%;background:var(--weight)"></div></div>
+          <div class="wt-prog-count" id="cnt-weight" style="color:var(--weight)">0/2</div>
+        </div>
+        <div class="wt-prog-row">
+          <div class="wt-prog-label">⚡ HIIT</div>
+          <div class="wt-prog-bar"><div class="wt-prog-fill" id="prog-hiit" style="width:0%;background:#ff2d55"></div></div>
+          <div class="wt-prog-count" id="cnt-hiit" style="color:#ff2d55">0/1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Week Grid (Flexible) -->
     <div class="card">
-      <div class="section-title">ตารางสัปดาห์นี้</div>
+      <div class="section-title">📅 ตารางสัปดาห์</div>
       <div class="week-grid" id="week-grid"></div>
-      <div style="font-size:11px;color:var(--muted);margin-top:10px;text-align:center">กดวันเพื่อดูกิจกรรม</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:10px;text-align:center">กดวันเพื่อกำหนดหรือดูกิจกรรม</div>
     </div>
   </div>
 
@@ -313,10 +383,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div><div class="header-title">PROGRAM</div><div class="header-sub">รายละเอียดโปรแกรม</div></div>
     </div>
     <div class="prog-card" style="--c:var(--run)">
-      <div class="prog-name">RUN DAY</div>
-      <div class="prog-sub">จันทร์ / พุธ / ศุกร์ • 40 นาที</div>
+      <div class="prog-name">ZONE 2 RUN</div>
+      <div class="prog-sub">จันทร์ / พุธ / ศุกร์ • 40 นาที • วิ่งช้าพูดได้</div>
       <div class="prog-item"><div><div class="prog-item-name">เดินวอร์มอัพ</div><div class="prog-item-sets">5 นาที</div></div><div class="prog-badge">วอร์มอัพ</div></div>
       <div class="prog-item"><div><div class="prog-item-name">วิ่ง Zone 2</div><div class="prog-item-sets">30 นาที • ชีพจร 120-140 bpm</div></div><div class="prog-badge">หลัก</div></div>
+      <div class="prog-item"><div><div class="prog-item-name">เดินคูลดาวน์</div><div class="prog-item-sets">5 นาที</div></div><div class="prog-badge">คูลดาวน์</div></div>
+    </div>
+    <div class="prog-card" style="--c:#ff2d55">
+      <div class="prog-name">HIIT RUN</div>
+      <div class="prog-sub">เสาร์ • 25 นาที • วิ่งเร็วสลับพัก</div>
+      <div style="background:rgba(255,45,85,.08);border:1px solid rgba(255,45,85,.2);border-radius:10px;padding:10px 12px;font-size:12px;color:#ff2d55;margin-bottom:12px">⚡ เผาผลาญสูงต่อเนื่องหลายชั่วโมงหลังออก</div>
+      <div class="prog-item"><div><div class="prog-item-name">เดินวอร์มอัพ</div><div class="prog-item-sets">5 นาที</div></div><div class="prog-badge">วอร์มอัพ</div></div>
+      <div class="prog-item"><div><div class="prog-item-name">วิ่งเร็วสุด → เดินพัก</div><div class="prog-item-sets">30 วิ Sprint / 90 วิ เดิน × 8-10 รอบ</div></div><div class="prog-badge">หลัก</div></div>
       <div class="prog-item"><div><div class="prog-item-name">เดินคูลดาวน์</div><div class="prog-item-sets">5 นาที</div></div><div class="prog-badge">คูลดาวน์</div></div>
     </div>
     <div class="prog-card" style="--c:var(--weight)">
@@ -329,7 +407,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="prog-card" style="--c:var(--weight)">
       <div class="prog-name">WEIGHT B</div>
-      <div class="prog-sub">เสาร์ • 45 นาที • เน้น Pull + Legs</div>
+      <div class="prog-sub">อาทิตย์ • 45 นาที • เน้น Pull + Legs</div>
       <div class="prog-item"><div><div class="prog-item-name">Romanian Deadlift</div><div class="prog-item-sets">3 x 10 ครั้ง</div></div><div class="prog-badge">ต้นขาหลัง</div></div>
       <div class="prog-item"><div><div class="prog-item-name">Bent-over Row</div><div class="prog-item-sets">3 x 10 ครั้ง</div></div><div class="prog-badge">หลัง</div></div>
       <div class="prog-item"><div><div class="prog-item-name">Goblet Squat</div><div class="prog-item-sets">3 x 12 ครั้ง</div></div><div class="prog-badge">ขา</div></div>
@@ -344,7 +422,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div id="today-prog-content"></div>
   </div>
-
 
 <!-- Log Workout Modal -->
 <div class="modal-overlay" id="log-modal">
@@ -384,7 +461,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 </div><!-- end scroll-area -->
 
-
 <!-- Day Detail Modal -->
 <div class="modal-overlay" id="detail-modal">
   <div class="modal-box">
@@ -394,6 +470,86 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="modal-footer">
       <button class="btn-log-cancel" style="width:100%" onclick="closeDetailModal()">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<!-- Assign Day Modal -->
+<div class="modal-overlay" id="assign-modal">
+  <div class="modal-box">
+    <div class="modal-scroll">
+      <div class="modal-title">📅 กำหนดวันนี้</div>
+      <div class="modal-sub" id="assign-date-label">เลือกประเภทการออกกำลังกาย</div>
+      <div class="assign-grid" id="assign-grid">
+        <div class="assign-btn" onclick="selectAssign('run')" id="assign-run">
+          <div class="assign-icon">🏃</div>
+          <div class="assign-name">Zone 2</div>
+          <div class="assign-desc">วิ่งช้า คุยได้</div>
+        </div>
+        <div class="assign-btn" onclick="selectAssign('weight')" id="assign-weight">
+          <div class="assign-icon">💪</div>
+          <div class="assign-name">เวท</div>
+          <div class="assign-desc">ประคองกล้าม</div>
+        </div>
+        <div class="assign-btn" onclick="selectAssign('hiit')" id="assign-hiit">
+          <div class="assign-icon">⚡</div>
+          <div class="assign-name">HIIT</div>
+          <div class="assign-desc">วิ่งเร็วสลับพัก</div>
+        </div>
+        <div class="assign-btn" onclick="selectAssign('rest')" id="assign-rest">
+          <div class="assign-icon">😴</div>
+          <div class="assign-name">พักผ่อน</div>
+          <div class="assign-desc">ฟื้นฟูร่างกาย</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="log-actions">
+        <button class="btn-log-save" onclick="saveAssign()">✓ บันทึก</button>
+        <button class="btn-log-cancel" onclick="closeAssignModal()">ยกเลิก</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Goal Edit Modal -->
+<div class="modal-overlay" id="goal-modal">
+  <div class="modal-box">
+    <div class="modal-scroll">
+      <div class="modal-title">🎯 ตั้งเป้าสัปดาห์</div>
+      <div class="modal-sub">กำหนดจำนวนครั้งต่อสัปดาห์</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px">
+          <div style="font-size:15px;font-weight:700">🏃 วิ่ง Zone 2</div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button onclick="adjustGoal('run',-1)" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text);font-size:18px;cursor:pointer">−</button>
+            <span id="edit-run" style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent);min-width:20px;text-align:center">3</span>
+            <button onclick="adjustGoal('run',1)" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text);font-size:18px;cursor:pointer">+</button>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px">
+          <div style="font-size:15px;font-weight:700">💪 เวท</div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button onclick="adjustGoal('weight',-1)" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text);font-size:18px;cursor:pointer">−</button>
+            <span id="edit-weight" style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent);min-width:20px;text-align:center">2</span>
+            <button onclick="adjustGoal('weight',1)" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text);font-size:18px;cursor:pointer">+</button>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px">
+          <div style="font-size:15px;font-weight:700">⚡ HIIT</div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button onclick="adjustGoal('hiit',-1)" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text);font-size:18px;cursor:pointer">−</button>
+            <span id="edit-hiit" style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent);min-width:20px;text-align:center">1</span>
+            <button onclick="adjustGoal('hiit',1)" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text);font-size:18px;cursor:pointer">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="log-actions">
+        <button class="btn-log-save" onclick="saveGoals()">✓ บันทึก</button>
+        <button class="btn-log-cancel" onclick="closeGoalModal()">ยกเลิก</button>
+      </div>
     </div>
   </div>
 </div>
@@ -421,13 +577,53 @@ const store={
 
 // ===== SCHEDULE =====
 const schedule=[
-  {day:'จ',type:'run',name:'RUN DAY',desc:'วิ่ง Zone 2',duration:'40 นาที',typeLabel:'Cardio',color:'var(--run)',exercises:[{name:'เดินวอร์มอัพ',sets:'5 นาที',badge:'วอร์มอัพ'},{name:'วิ่ง Zone 2',sets:'30 นาที • ชีพจร 120-140',badge:'หลัก'},{name:'เดินคูลดาวน์',sets:'5 นาที',badge:'คูลดาวน์'}]},
-  {day:'อ',type:'weight',name:'WEIGHT A',desc:'เวทประคองกล้าม ชุด A',duration:'45 นาที',typeLabel:'Strength',color:'var(--weight)',exercises:[{name:'Bench Press',sets:'3 x 10',badge:'หน้าอก'},{name:'Shoulder Press',sets:'3 x 10',badge:'ไหล่'},{name:'Dip',sets:'3 x max',badge:'ไทรเซป'},{name:'Plank',sets:'3 x 45 วิ',badge:'Core'}]},
-  {day:'พ',type:'run',name:'RUN DAY',desc:'วิ่ง Zone 2',duration:'40 นาที',typeLabel:'Cardio',color:'var(--run)',exercises:[{name:'เดินวอร์มอัพ',sets:'5 นาที',badge:'วอร์มอัพ'},{name:'วิ่ง Zone 2',sets:'30 นาที • ชีพจร 120-140',badge:'หลัก'},{name:'เดินคูลดาวน์',sets:'5 นาที',badge:'คูลดาวน์'}]},
-  {day:'พฤ',type:'rest',name:'REST DAY',desc:'พักฟื้นกล้าม',duration:'—',typeLabel:'Recovery',color:'var(--rest)',exercises:[]},
-  {day:'ศ',type:'run',name:'RUN DAY',desc:'วิ่ง Zone 2',duration:'40 นาที',typeLabel:'Cardio',color:'var(--run)',exercises:[{name:'เดินวอร์มอัพ',sets:'5 นาที',badge:'วอร์มอัพ'},{name:'วิ่ง Zone 2',sets:'30 นาที • ชีพจร 120-140',badge:'หลัก'},{name:'เดินคูลดาวน์',sets:'5 นาที',badge:'คูลดาวน์'}]},
-  {day:'ส',type:'weight',name:'WEIGHT B',desc:'เวทประคองกล้าม ชุด B',duration:'45 นาที',typeLabel:'Strength',color:'var(--weight)',exercises:[{name:'RDL',sets:'3 x 10',badge:'ต้นขาหลัง'},{name:'Bent-over Row',sets:'3 x 10',badge:'หลัง'},{name:'Goblet Squat',sets:'3 x 12',badge:'ขา'},{name:'Bicep Curl',sets:'3 x 12',badge:'ไบเซป'}]},
-  {day:'อา',type:'rest',name:'REST DAY',desc:'พักผ่อนเต็มวัน',duration:'—',typeLabel:'Recovery',color:'var(--rest)',exercises:[]},
+  {day:'จ',type:'run',name:'ZONE 2 RUN',desc:'วิ่งช้า คุยได้ เผาไขมัน',duration:'40 นาที',typeLabel:'Zone 2',color:'var(--run)',
+   tip:'💡 Zone 2 = วิ่งช้าพอพูดได้สบาย ชีพจร 120-140 bpm ถ้าหอบ = ช้าลง',
+   exercises:[
+    {name:'เดินวอร์มอัพ',sets:'5 นาที',badge:'วอร์มอัพ',tip:'ค่อยๆ เดินเร็วขึ้น เตรียมร่างกาย'},
+    {name:'วิ่ง Zone 2',sets:'30 นาที • ชีพจร 120-140 bpm',badge:'หลัก',tip:'วิ่งช้าพอพูดประโยคยาวได้ ไม่ต้องรีบ'},
+    {name:'เดินคูลดาวน์',sets:'5 นาที',badge:'คูลดาวน์',tip:'ลดชีพจรช้าๆ ยืดน่องและต้นขา'}
+  ]},
+  {day:'อ',type:'weight',name:'WEIGHT A',desc:'เวทประคองกล้าม ชุด Push',duration:'45 นาที',typeLabel:'Strength',color:'var(--weight)',
+   tip:'💡 ลงช้า 2 วิ ขึ้นเร็ว 1 วิ พักระหว่างเซต 60-90 วินาที',
+   exercises:[
+    {name:'Bench Press',sets:'3 x 10',badge:'หน้าอก',tip:'นอนราบ กดขึ้นตรง ลงช้าๆ'},
+    {name:'Shoulder Press',sets:'3 x 10',badge:'ไหล่',tip:'นั่งตรง กดขึ้นเหนือหัว'},
+    {name:'Dip',sets:'3 x max',badge:'ไทรเซป',tip:'ลำตัวตั้ง ลงจน 90° แล้วดันขึ้น'},
+    {name:'Plank',sets:'3 x 45 วิ',badge:'Core',tip:'ลำตัวเส้นตรง ไม่ยกก้น ไม่แอ่นหลัง'}
+  ]},
+  {day:'พ',type:'run',name:'ZONE 2 RUN',desc:'วิ่งช้า คุยได้ เผาไขมัน',duration:'40 นาที',typeLabel:'Zone 2',color:'var(--run)',
+   tip:'💡 Zone 2 = วิ่งช้าพอพูดได้สบาย ชีพจร 120-140 bpm ถ้าหอบ = ช้าลง',
+   exercises:[
+    {name:'เดินวอร์มอัพ',sets:'5 นาที',badge:'วอร์มอัพ',tip:'ค่อยๆ เดินเร็วขึ้น เตรียมร่างกาย'},
+    {name:'วิ่ง Zone 2',sets:'30 นาที • ชีพจร 120-140 bpm',badge:'หลัก',tip:'วิ่งช้าพอพูดประโยคยาวได้ ไม่ต้องรีบ'},
+    {name:'เดินคูลดาวน์',sets:'5 นาที',badge:'คูลดาวน์',tip:'ลดชีพจรช้าๆ ยืดน่องและต้นขา'}
+  ]},
+  {day:'พฤ',type:'rest',name:'REST DAY',desc:'พักฟื้นกล้าม',duration:'—',typeLabel:'Recovery',color:'var(--rest)',tip:'',exercises:[]},
+  {day:'ศ',type:'run',name:'ZONE 2 RUN',desc:'วิ่งช้า คุยได้ เผาไขมัน',duration:'40 นาที',typeLabel:'Zone 2',color:'var(--run)',
+   tip:'💡 Zone 2 = วิ่งช้าพอพูดได้สบาย ชีพจร 120-140 bpm ถ้าหอบ = ช้าลง',
+   exercises:[
+    {name:'เดินวอร์มอัพ',sets:'5 นาที',badge:'วอร์มอัพ',tip:'ค่อยๆ เดินเร็วขึ้น เตรียมร่างกาย'},
+    {name:'วิ่ง Zone 2',sets:'30 นาที • ชีพจร 120-140 bpm',badge:'หลัก',tip:'วิ่งช้าพอพูดประโยคยาวได้ ไม่ต้องรีบ'},
+    {name:'เดินคูลดาวน์',sets:'5 นาที',badge:'คูลดาวน์',tip:'ลดชีพจรช้าๆ ยืดน่องและต้นขา'}
+  ]},
+  {day:'ส',type:'hiit',name:'HIIT RUN',desc:'วิ่งเร็วสลับพัก เร่ง Metabolism',duration:'25 นาที',typeLabel:'HIIT',color:'#ff2d55',
+   tip:'💡 HIIT = วิ่งเร็วสุด 30 วิ → เดิน 90 วิ ทำซ้ำ เผาผลาญสูงหลายชั่วโมง',
+   exercises:[
+    {name:'เดินวอร์มอัพ',sets:'5 นาที',badge:'วอร์มอัพ',tip:'เดินเร็วๆ แกว่งแขน เตรียมขา'},
+    {name:'วิ่งเร็วสุด',sets:'30 วินาที',badge:'Sprint',tip:'วิ่งเต็มที่เลย ไม่ต้องเหลือแรง'},
+    {name:'เดินพัก',sets:'90 วินาที',badge:'พัก',tip:'เดินช้าๆ หายใจให้สม่ำเสมอ'},
+    {name:'ทำซ้ำ 8-10 รอบ',sets:'รวม ~20 นาที',badge:'หลัก',tip:'ถ้าเหนื่อยมากลด 6 รอบก็ได้'},
+    {name:'เดินคูลดาวน์',sets:'5 นาที',badge:'คูลดาวน์',tip:'เดินช้าๆ ยืดน่อง ต้นขาหน้า-หลัง'}
+  ]},
+  {day:'อา',type:'rest',name:'REST DAY',desc:'พักผ่อนเต็มวัน',duration:'—',typeLabel:'Recovery',color:'var(--rest)',
+   tip:'💡 ลงช้า 2 วิ ขึ้นเร็ว 1 วิ พักระหว่างเซต 60-90 วินาที',
+   exercises:[
+    {name:'RDL',sets:'3 x 10',badge:'ต้นขาหลัง',tip:'หลังตรง โน้มตัว รู้สึกตึงต้นขาหลัง'},
+    {name:'Bent-over Row',sets:'3 x 10',badge:'หลัง',tip:'โน้ม 45° ดึงข้อศอกขึ้น'},
+    {name:'Goblet Squat',sets:'3 x 12',badge:'ขา',tip:'จับดัมเบลหน้าอก ย่อต้นขาขนานพื้น'},
+    {name:'Bicep Curl',sets:'3 x 12',badge:'ไบเซป',tip:'ข้อศอกชิดตัว ม้วนช้าๆ'}
+  ]},
 ];
 
 // ===== ACHIEVEMENTS =====
@@ -457,9 +653,9 @@ if(store.get('water_date')!==today){store.set('water_ml',0);store.set('water_dat
 // ===== INIT =====
 function init(){
   updateDate();renderToday();renderWater();renderWeekGrid();
-  renderReminders();renderStats();updateStreakUI();
-  requestNotificationPermission();
-  scheduleWaterReminders();
+  renderWeeklyTarget();
+  renderStats();updateStreakUI();
+  
 }
 
 function updateDate(){
@@ -586,7 +782,7 @@ function addWater(){
       store.setJSON('fittrack_stats',stats);
       setTimeout(()=>checkAchievements(),500);
     }
-    sendNotification('💧 FitTrack','ดื่มน้ำครบ 2.5 ลิตรแล้ววันนี้! 🎉');
+    
   } else {
     showToast(`💧 +250ml (${waterMl}ml)`);
   }
@@ -595,37 +791,148 @@ function addWater(){
 function resetWater(){waterMl=0;store.set('water_ml',0);renderWater();}
 
 // ===== WEEK GRID =====
+// ===== WEEKLY GOALS =====
+let weeklyGoals = store.getJSON('weekly_goals', {run:3, weight:2, hiit:1});
+let customWeek = store.getJSON('custom_week', {}); // {dateStr: type}
+
+function renderWeeklyTarget(){
+  document.getElementById('goal-run-num').textContent = weeklyGoals.run;
+  document.getElementById('goal-weight-num').textContent = weeklyGoals.weight;
+  document.getElementById('goal-hiit-num').textContent = weeklyGoals.hiit;
+  
+  // Count this week's activities
+  const now = new Date();
+  const weekStart = new Date(now);
+  weekStart.setDate(now.getDate() - now.getDay() + 1); // Monday
+  weekStart.setHours(0,0,0,0);
+  
+  let cntRun=0, cntWeight=0, cntHiit=0;
+  stats.history.forEach(h=>{
+    const d = new Date(h.date);
+    if(d >= weekStart){
+      if(h.type==='run') cntRun++;
+      else if(h.type==='weight') cntWeight++;
+      else if(h.type==='hiit') cntHiit++;
+    }
+  });
+  
+  const pRun = Math.min(cntRun/weeklyGoals.run*100,100);
+  const pWeight = Math.min(cntWeight/weeklyGoals.weight*100,100);
+  const pHiit = Math.min(cntHiit/weeklyGoals.hiit*100,100);
+  
+  document.getElementById('prog-run').style.width = pRun+'%';
+  document.getElementById('prog-weight').style.width = pWeight+'%';
+  document.getElementById('prog-hiit').style.width = pHiit+'%';
+  document.getElementById('cnt-run').textContent = cntRun+'/'+weeklyGoals.run;
+  document.getElementById('cnt-weight').textContent = cntWeight+'/'+weeklyGoals.weight;
+  document.getElementById('cnt-hiit').textContent = cntHiit+'/'+weeklyGoals.hiit;
+  
+  if(pRun===100&&pWeight===100&&pHiit===100) showToast('🎯 ครบเป้าสัปดาห์นี้แล้ว! สุดยอด!');
+}
+
+// ===== GOAL EDIT MODAL =====
+let editGoals = {};
+function openGoalEdit(){
+  editGoals = {...weeklyGoals};
+  document.getElementById('edit-run').textContent = editGoals.run;
+  document.getElementById('edit-weight').textContent = editGoals.weight;
+  document.getElementById('edit-hiit').textContent = editGoals.hiit;
+  document.getElementById('goal-modal').classList.add('show');
+  document.querySelector('.fab').classList.add('hidden');
+}
+function closeGoalModal(){
+  document.getElementById('goal-modal').classList.remove('show');
+  document.querySelector('.fab').classList.remove('hidden');
+}
+function adjustGoal(type, delta){
+  editGoals[type] = Math.max(1, Math.min(7, (editGoals[type]||1)+delta));
+  document.getElementById('edit-'+type).textContent = editGoals[type];
+}
+function saveGoals(){
+  weeklyGoals = {...editGoals};
+  store.setJSON('weekly_goals', weeklyGoals);
+  closeGoalModal();
+  renderWeeklyTarget();
+  renderWeekGrid();
+  showToast('🎯 บันทึกเป้าหมายแล้ว!');
+}
+document.getElementById('goal-modal').addEventListener('click',function(e){if(e.target===this)closeGoalModal();});
+
+// ===== ASSIGN DAY MODAL =====
+let assignDateStr = '';
+let selectedAssign = null;
+function openAssignModal(dateStr, existingActs){
+  assignDateStr = dateStr;
+  selectedAssign = null;
+  document.querySelectorAll('.assign-btn').forEach(b=>b.classList.remove('selected'));
+  const d = new Date(dateStr);
+  const days=['อา','จ','อ','พ','พฤ','ศ','ส'];
+  const months=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  document.getElementById('assign-date-label').textContent = days[d.getDay()]+' '+d.getDate()+' '+months[d.getMonth()];
+  document.getElementById('assign-modal').classList.add('show');
+  document.querySelector('.fab').classList.add('hidden');
+}
+function closeAssignModal(){
+  document.getElementById('assign-modal').classList.remove('show');
+  document.querySelector('.fab').classList.remove('hidden');
+}
+function selectAssign(type){
+  selectedAssign = type;
+  document.querySelectorAll('.assign-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('assign-'+type).classList.add('selected');
+}
+function saveAssign(){
+  if(!selectedAssign){showToast('⚠️ เลือกประเภทก่อนนะ');return;}
+  customWeek[assignDateStr] = selectedAssign;
+  store.setJSON('custom_week', customWeek);
+  closeAssignModal();
+  renderWeekGrid();
+  showToast('✅ กำหนดตารางแล้ว!');
+}
+document.getElementById('assign-modal').addEventListener('click',function(e){if(e.target===this)closeAssignModal();});
+
 function renderWeekGrid(){
   const grid=document.getElementById('week-grid');
   const dayNames=['อา','จ','อ','พ','พฤ','ศ','ส'];
+  const typeIcons={run:'🏃',weight:'💪',hiit:'⚡',rest:'😴'};
   const now=new Date();
-  const todayDow=now.getDay(); // 0=sun
+  const todayDow=now.getDay();
   grid.innerHTML='';
-  // Show Mon-Sun of current week
   for(let i=1;i<=7;i++){
-    const dow=i%7; // 1=Mon...6=Sat,0=Sun -> map to 1,2,3,4,5,6,0
+    const dow=i%7;
     const diff=dow-todayDow;
     const d2=new Date(now);d2.setDate(now.getDate()+diff);
     const dateStr=d2.toDateString();
     const isToday=dow===todayDow;
-    // Find activities logged on this day
     const acts=stats.history.filter(h=>h.date===dateStr);
-    let icon='·',cls='rest',border='';
+    const planned=customWeek[dateStr]; // user-planned type
+    
+    let icon='＋',cls='rest',done=false;
     if(acts.length>0){
+      done=true;
       const types=acts.map(a=>a.type);
-      if(types.includes('run')&&types.includes('weight')){icon='🔥';cls='run';}
+      if(types.includes('hiit')){icon='⚡';cls='hiit';}
+      else if(types.includes('run')&&types.includes('weight')){icon='🔥';cls='run';}
       else if(types.includes('run')){icon='🏃';cls='run';}
       else{icon='💪';cls='weight';}
+    } else if(planned){
+      cls=planned;
+      icon=typeIcons[planned]||'·';
     }
+    
     const cell=document.createElement('div');
-    cell.className=`week-day ${cls}${isToday?' today':''}${acts.length>0?' completed-day':''}`;
-    cell.innerHTML=`<div class="day-label">${dayNames[dow]}</div><div class="day-icon" style="font-size:${acts.length>0?'16px':'12px'}">${acts.length>0?icon:'·'}</div>`;
-    if(acts.length>0){
-      cell.title=acts.map(a=>a.name+(a.note?' ('+a.note+')':'')).join(', ');
+    cell.className=`week-day ${cls}${isToday?' today':''}${done?' completed-day':''}`;
+    cell.style.opacity = done?'1': planned?'0.7':'0.5';
+    cell.innerHTML=`<div class="day-label">${dayNames[dow]}</div><div class="day-icon" style="font-size:${done||planned?'15px':'11px'}">${icon}</div>`;
+    
+    if(done){
       cell.onclick=()=>showDayDetail(dateStr,acts);
+    } else {
+      cell.onclick=()=>openAssignModal(dateStr,acts);
     }
     grid.appendChild(cell);
   }
+  renderWeeklyTarget();
 }
 
 // ===== STATS PAGE =====
@@ -674,209 +981,12 @@ function showAchievement(a){
   document.getElementById('ach-title').textContent=a.name.toUpperCase();
   document.getElementById('ach-desc').textContent=a.desc;
   document.getElementById('ach-overlay').classList.add('show');
-  sendNotification('🏆 Achievement Unlocked!',`${a.emoji} ${a.name} — ${a.desc}`);
+  
 }
 
 function closeAchievement(){document.getElementById('ach-overlay').classList.remove('show');}
 
 // ===== REMINDERS =====
-const workoutReminders=[
-  {icon:'🏋️',text:'ออกกำลังกายตอนเย็น',time:'17:30 น. (จ, อ, พ, ศ, ส)'},
-  {icon:'🧘',text:'ยืดเหยียดก่อนนอน',time:'21:00 น. ทุกวัน'},
-];
-const waterReminders=[
-  {icon:'💧',text:'ดื่มน้ำตอนเช้า',time:'08:00 น.'},
-  {icon:'💧',text:'ดื่มน้ำระหว่างวัน',time:'ทุก 2 ชั่วโมง'},
-  {icon:'💧',text:'ดื่มน้ำก่อนออกกำลังกาย',time:'17:00 น.'},
-  {icon:'💧',text:'ดื่มน้ำก่อนนอน',time:'21:30 น.'},
-];
-const foodReminders=[
-  {icon:'🍳',text:'โปรตีนมื้อเช้า',time:'07:00 - 08:00 น.'},
-  {icon:'🥗',text:'กินผักก่อนคาร์บ',time:'ทุกมื้อ'},
-  {icon:'🍗',text:'โปรตีนหลังออกกำลังกาย',time:'ภายใน 30 นาที'},
-];
-
-function renderReminders(){
-  function build(id,items){
-    const c=document.getElementById(id);c.innerHTML='';
-    items.forEach((r,i)=>{
-      const key=id+'_'+i,isOn=toggleStates[key]!==false;
-      const div=document.createElement('div');div.className='reminder-item';
-      div.innerHTML=`<div class="reminder-left"><div class="reminder-icon">${r.icon}</div><div><div class="reminder-text">${r.text}</div><div class="reminder-time">${r.time}</div></div></div><div class="toggle ${isOn?'on':''}" onclick="toggleReminder('${key}',this)"></div>`;
-      c.appendChild(div);
-    });
-  }
-  build('workout-reminders',workoutReminders);
-  build('water-reminders',waterReminders);
-  build('food-reminders',foodReminders);
-}
-
-function toggleReminder(key,el){
-  const isOn=el.classList.toggle('on');
-  toggleStates[key]=isOn;
-  store.setJSON('toggles',toggleStates);
-  showToast(isOn?'🔔 เปิดการแจ้งเตือนแล้ว':'🔕 ปิดการแจ้งเตือนแล้ว');
-  scheduleWaterReminders();
-}
-
-// ===== NOTIFICATIONS =====
-function requestNotificationPermission(){
-  if('Notification' in window&&Notification.permission==='default'){
-    Notification.requestPermission();
-  }
-}
-
-function sendNotification(title,body){
-  if('Notification' in window&&Notification.permission==='granted'){
-    try{new Notification(title,{body,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">💪</text></svg>'});}catch(e){}
-  }
-}
-
-function scheduleWaterReminders(){
-  // Check water every hour and notify if behind
-  if(!window._waterInterval)
-    window._waterInterval=setInterval(()=>{
-      const h=new Date().getHours();
-      if(h>=8&&h<=21&&waterMl<2500){
-        const needed=2500-waterMl;
-        const hoursLeft=21-h;
-        if(hoursLeft>0&&needed>0&&toggleStates['water-reminders_1']!==false){
-          sendNotification('💧 อย่าลืมดื่มน้ำ!',`ยังขาดอีก ${needed}ml • เหลือเวลา ${hoursLeft} ชั่วโมง`);
-        }
-      }
-    },2*60*60*1000); // ทุก 2 ชั่วโมง
-}
-
-// ===== NAV =====
-function showPage(name,navEl){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  navEl.classList.add('active');
-  document.getElementById('scroll-area').scrollTop=0;
-  if(name==='stats') renderStats();
-  if(name==='remind') renderTodayProgram();
-}
-
-// ===== TOAST =====
-let toastT;
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200);
-}
-
-
-// ===== LOG MODAL =====
-let selectedLogType = null;
-
-function openLogModal(){
-  selectedLogType = null;
-  document.querySelectorAll('.log-type-btn').forEach(b=>b.classList.remove('selected'));
-  document.getElementById('log-note').value = '';
-  document.getElementById('log-modal').classList.add('show');
-  document.querySelector('.fab').classList.add('hidden');
-
-}
-
-function closeLogModal(){
-  document.getElementById('log-modal').classList.remove('show');
-  document.querySelector('.fab').classList.remove('hidden');
-}
-
-function selectLogType(type){
-  selectedLogType = type;
-  document.querySelectorAll('.log-type-btn').forEach(b=>b.classList.remove('selected'));
-  document.getElementById('log-'+type).classList.add('selected');
-}
-
-function saveLog(){
-  if(!selectedLogType){ showToast('⚠️ เลือกประเภทก่อนนะ'); return; }
-  document.querySelector('.fab').classList.remove('hidden');
-  const note = document.getElementById('log-note').value.trim();
-  const now = new Date();
-  const typeMap = {run:'run', weight:'weight', both:'weight', other:'weight'};
-  const nameMap = {run:'🏃 วิ่ง', weight:'💪 เวท', both:'🔥 วิ่ง+เวท', other:'⚡ อื่นๆ'};
-
-  // Save to stats
-  stats.totalSessions++;
-  if(selectedLogType==='run'||selectedLogType==='both') stats.totalRun++;
-  if(selectedLogType==='weight'||selectedLogType==='both') stats.totalWeight++;
-
-  // Streak
-  const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
-  if(stats.lastDate===yesterday.toDateString()){stats.currentStreak++;}
-  else if(stats.lastDate!==today){stats.currentStreak=1;}
-  stats.lastDate=today;
-  if(stats.currentStreak>stats.bestStreak)stats.bestStreak=stats.currentStreak;
-
-  // History entry
-  stats.history.unshift({
-    date:today,
-    dateStr:`${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`,
-    type:typeMap[selectedLogType],
-    name:nameMap[selectedLogType],
-    note:note
-  });
-  if(stats.history.length>50)stats.history=stats.history.slice(0,50);
-  store.setJSON('fittrack_stats',stats);
-
-  closeLogModal();
-  updateStreakUI();
-  renderWeekGrid();
-  showToast('🔥 บันทึกแล้ว! เยี่ยมมาก');
-  setTimeout(()=>checkAchievements(),500);
-}
-
-// Close modal on overlay click
-document.getElementById('log-modal').addEventListener('click',function(e){
-  if(e.target===this) closeLogModal();
-});
-
-// ===== DAY DETAIL MODAL =====
-function showDayDetail(dateStr, acts){
-  document.querySelector('.fab').classList.add('hidden');
-
-  const names = {run:'🏃 วิ่ง', weight:'💪 เวท', both:'🔥 ทั้งคู่', other:'⚡ อื่นๆ'};
-  let html2 = `<div style="margin-bottom:16px">
-    <div style="font-size:12px;color:var(--muted);margin-bottom:12px">${dateStr}</div>`;
-  acts.forEach((a,i)=>{
-    const origIdx = stats.history.findIndex(h=>h.date===a.date&&h.name===a.name&&h.dateStr===a.dateStr);
-    html2 += `<div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
-      <div>
-        <div style="font-size:14px;font-weight:700">${a.name}</div>
-        ${a.note?`<div style="font-size:12px;color:var(--muted);margin-top:2px">${a.note}</div>`:''}
-        <div style="font-size:11px;color:var(--muted);margin-top:2px">${a.dateStr}</div>
-      </div>
-      <button onclick="deleteLog(${origIdx})" style="background:rgba(255,60,60,.15);border:1px solid rgba(255,60,60,.3);color:#ff6060;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:Sarabun,sans-serif">ลบ</button>
-    </div>`;
-  });
-  html2 += `</div>`;
-  
-  document.getElementById('detail-body').innerHTML = html2;
-  document.getElementById('detail-modal').classList.add('show');
-}
-
-function closeDetailModal(){
-  document.getElementById('detail-modal').classList.remove('show');
-  document.querySelector('.fab').classList.remove('hidden');
-}
-
-function deleteLog(idx){
-  if(idx<0||idx>=stats.history.length) return;
-  const entry = stats.history[idx];
-  // Reverse stats
-  stats.totalSessions = Math.max(0, stats.totalSessions-1);
-  if(entry.type==='run') stats.totalRun = Math.max(0, stats.totalRun-1);
-  if(entry.type==='weight') stats.totalWeight = Math.max(0, stats.totalWeight-1);
-  stats.history.splice(idx,1);
-  store.setJSON('fittrack_stats', stats);
-  updateStreakUI();
-  renderWeekGrid();
-  renderStats();
-  closeDetailModal();
-  showToast('🗑 ลบแล้ว');
-}
 
 document.getElementById('detail-modal').addEventListener('click',function(e){
   if(e.target===this) closeDetailModal();
@@ -906,25 +1016,13 @@ function renderTodayProgram(){
         <div class="meta-item"><div class="meta-icon">⏱</div><span>${s.duration}</span></div>
         <div class="meta-item"><div class="meta-icon">🔥</div><span>${s.typeLabel}</span></div>
       </div>
+      ${s.tip?`<div style="margin-top:14px;background:rgba(255,107,0,.08);border:1px solid rgba(255,107,0,.2);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--text);line-height:1.5">${s.tip}</div>`:''}
     </div>`;
 
     // Exercise cards
     html3 += `<div class="card"><div class="section-title">📋 รายการท่า</div>`;
     s.exercises.forEach((ex,i)=>{
-      const tips = {
-        'เดินวอร์มอัพ':'ค่อยๆ เดิน เตรียมร่างกาย',
-        'วิ่ง Zone 2':'พูดได้แต่หอบเล็กน้อย • ชีพจร 120-140',
-        'เดินคูลดาวน์':'ลดหัวใจ ยืดเหยียดเบาๆ',
-        'Bench Press':'นอนราบ กดขึ้นตรง ลงช้าๆ',
-        'Shoulder Press':'นั่งตรง กดขึ้นเหนือหัว',
-        'Dip':'ลำตัวตั้ง ลงจน 90° แล้วดันขึ้น',
-        'Plank':'ลำตัวเส้นตรง ไม่ยกก้น',
-        'RDL':'หลังตรง โน้มตัว รู้สึกตึงต้นขาหลัง',
-        'Bent-over Row':'โน้ม 45° ดึงข้อศอกขึ้น',
-        'Goblet Squat':'จับดัมเบลหน้าอก ย่อต้นขาขนานพื้น',
-        'Bicep Curl':'ข้อศอกชิดตัว ม้วนช้าๆ',
-      };
-      const tip = tips[ex.name]||'';
+      const tip = ex.tip||'';
       html3 += `<div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <div style="font-size:15px;font-weight:700">${ex.name}</div>
@@ -939,11 +1037,22 @@ function renderTodayProgram(){
     // Tips card
     if(s.type==='run'){
       html3 += `<div class="card">
-        <div class="section-title">🫁 เทคนิควิ่ง</div>
+        <div class="section-title">🫁 เทคนิค Zone 2</div>
         <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:13px">🔸 ทดสอบง่ายๆ — พูดประโยคยาวได้ = Zone 2 ✅</div>
           <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:13px">🔸 หายใจเข้า 2 ก้าว → ออก 2 ก้าว</div>
-          <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:13px">🔸 วิ่งช้าพอพูดได้ ไม่ต้องรีบ</div>
           <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:13px">🔸 เจ็บสีข้าง → หยุดกดมือ หายใจลึก</div>
+          <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:13px">🔸 ทำสม่ำเสมอ 2-3 เดือน เพซจะดีขึ้นเอง</div>
+        </div>
+      </div>`;
+    } else if(s.type==='hiit'){
+      html3 += `<div class="card">
+        <div class="section-title">⚡ เทคนิค HIIT</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="background:rgba(255,45,85,.06);border:1px solid rgba(255,45,85,.2);border-radius:12px;padding:12px 14px;font-size:13px">🔸 Sprint = วิ่งเร็วสุดเลย ไม่มีเหลือแรง</div>
+          <div style="background:rgba(255,45,85,.06);border:1px solid rgba(255,45,85,.2);border-radius:12px;padding:12px 14px;font-size:13px">🔸 ช่วงพัก = เดินช้าๆ ไม่ต้องหยุดนิ่ง</div>
+          <div style="background:rgba(255,45,85,.06);border:1px solid rgba(255,45,85,.2);border-radius:12px;padding:12px 14px;font-size:13px">🔸 ถ้าเพิ่งเริ่ม ทำ 6 รอบก่อน ค่อยเพิ่ม</div>
+          <div style="background:rgba(255,45,85,.06);border:1px solid rgba(255,45,85,.2);border-radius:12px;padding:12px 14px;font-size:13px">🔸 ทำสัปดาห์ละครั้งพอ ไม่ควรบ่อยกว่านี้</div>
         </div>
       </div>`;
     } else {
@@ -959,6 +1068,108 @@ function renderTodayProgram(){
   }
   content.innerHTML = html3;
 }
+
+
+// ===== LOG MODAL =====
+let selectedLogType = null;
+
+function openLogModal(){
+  selectedLogType = null;
+  document.querySelectorAll('.log-type-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('log-note').value = '';
+  document.getElementById('log-modal').classList.add('show');
+  document.querySelector('.fab').classList.add('hidden');
+}
+
+function closeLogModal(){
+  document.getElementById('log-modal').classList.remove('show');
+  document.querySelector('.fab').classList.remove('hidden');
+}
+
+function selectLogType(type){
+  selectedLogType = type;
+  document.querySelectorAll('.log-type-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('log-'+type).classList.add('selected');
+}
+
+function saveLog(){
+  if(!selectedLogType){ showToast('⚠️ เลือกประเภทก่อนนะ'); return; }
+  document.querySelector('.fab').classList.remove('hidden');
+  const note = document.getElementById('log-note').value.trim();
+  const now = new Date();
+  const typeMap = {run:'run', weight:'weight', both:'weight', other:'weight'};
+  const nameMap = {run:'🏃 วิ่ง', weight:'💪 เวท', both:'🔥 วิ่ง+เวท', other:'⚡ อื่นๆ'};
+  stats.totalSessions++;
+  if(selectedLogType==='run'||selectedLogType==='both') stats.totalRun++;
+  if(selectedLogType==='weight'||selectedLogType==='both') stats.totalWeight++;
+  if(selectedLogType==='hiit'||selectedLogType==='both') stats.totalHiit=(stats.totalHiit||0)+1;
+  const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+  if(stats.lastDate===yesterday.toDateString()){stats.currentStreak++;}
+  else if(stats.lastDate!==today){stats.currentStreak=1;}
+  stats.lastDate=today;
+  if(stats.currentStreak>stats.bestStreak)stats.bestStreak=stats.currentStreak;
+  stats.history.unshift({
+    date:today,
+    dateStr:`${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`,
+    type:typeMap[selectedLogType],
+    name:nameMap[selectedLogType],
+    note:note
+  });
+  if(stats.history.length>50)stats.history=stats.history.slice(0,50);
+  store.setJSON('fittrack_stats',stats);
+  closeLogModal();
+  updateStreakUI();
+  renderWeekGrid();
+  showToast('🔥 บันทึกแล้ว! เยี่ยมมาก');
+  setTimeout(()=>checkAchievements(),500);
+}
+
+document.getElementById('log-modal').addEventListener('click',function(e){
+  if(e.target===this) closeLogModal();
+});
+
+// ===== DAY DETAIL =====
+function showDayDetail(dateStr, acts){
+  document.querySelector('.fab').classList.add('hidden');
+  const names={run:'🏃 วิ่ง',weight:'💪 เวท',hiit:'⚡ HIIT',other:'⚡ อื่นๆ'};
+  let h2=`<div style="margin-bottom:8px"><div style="font-size:12px;color:var(--muted);margin-bottom:12px">${dateStr}</div>`;
+  acts.forEach(a=>{
+    const origIdx=stats.history.findIndex(h=>h.date===a.date&&h.name===a.name&&h.dateStr===a.dateStr);
+    h2+=`<div style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:14px;font-weight:700">${a.name}</div>
+        ${a.note?`<div style="font-size:12px;color:var(--muted);margin-top:2px">${a.note}</div>`:''}
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">${a.dateStr}</div>
+      </div>
+      <button onclick="deleteLog(${origIdx})" style="background:rgba(255,60,60,.15);border:1px solid rgba(255,60,60,.3);color:#ff6060;border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer;font-family:Sarabun,sans-serif">ลบ</button>
+    </div>`;
+  });
+  h2+=`</div>`;
+  document.getElementById('detail-body').innerHTML=h2;
+  document.getElementById('detail-modal').classList.add('show');
+}
+
+function closeDetailModal(){
+  document.getElementById('detail-modal').classList.remove('show');
+  document.querySelector('.fab').classList.remove('hidden');
+}
+
+function deleteLog(idx){
+  if(idx<0||idx>=stats.history.length)return;
+  const entry=stats.history[idx];
+  stats.totalSessions=Math.max(0,stats.totalSessions-1);
+  if(entry.type==='run')stats.totalRun=Math.max(0,stats.totalRun-1);
+  if(entry.type==='weight')stats.totalWeight=Math.max(0,stats.totalWeight-1);
+  stats.history.splice(idx,1);
+  store.setJSON('fittrack_stats',stats);
+  updateStreakUI();renderWeekGrid();renderStats();
+  closeDetailModal();
+  showToast('🗑 ลบแล้ว');
+}
+
+document.getElementById('detail-modal').addEventListener('click',function(e){
+  if(e.target===this)closeDetailModal();
+});
 
 document.addEventListener('DOMContentLoaded',init);
 
